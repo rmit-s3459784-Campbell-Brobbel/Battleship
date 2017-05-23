@@ -37,8 +37,8 @@ public class BattleshipMain {
                 return new MonteCarloGuessPlayer();
             case "bonus":
                 return new BonusPlayer();
-            case "sample":
-                return new SampleRandomGuessPlayer();
+//            case "sample":
+//                return new SampleRandomGuessPlayer();
             default:
                 return null;
         }
