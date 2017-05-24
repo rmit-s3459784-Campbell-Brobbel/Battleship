@@ -39,10 +39,10 @@ public class GreedyGuessPlayer  implements Player{
     public Answer getAnswer(Guess guess) {
 
         Answer answer = new Answer();
-
         for (World.ShipLocation l : this.world.shipLocations) {
             for (World.Coordinate c : l.coordinates) {
-                if (c.row == guess.row && c.column == guess.column) {
+
+                 if (c.row == guess.row && c.column == guess.column) {
                     answer.isHit = true;
                     l.coordinates.remove(c);
                     if (l.coordinates.size() == 0) {
@@ -83,20 +83,22 @@ public class GreedyGuessPlayer  implements Player{
             }
         }
 
-        // If it is not a valid guess return null.
-        if (!world.updateShot(guess)) {
-            return null;
-        }
+//
 
         return guess;
+//        Guess tempGuess = new Guess();
+//        guess.row = 0;
+//        guess.column = 0;
+//        return tempGuess;
     } // end of makeGuess()
 
 
     @Override
     public void update(Guess guess, Answer answer) {
         // To be implemented.
-        System.out.println("Greedy Update");
-
+        System.out.println("Player State: " + this.state);
+        System.out.println("Current Dir" + currentHDir);
+        System.out.println("Guess: R-" + guess.row + " C-" + guess.column);
         if (this.state == PlayerState.TARGETING) {
             if (answer.isHit) {
                 this.state = PlayerState.HUNTING;
@@ -105,6 +107,7 @@ public class GreedyGuessPlayer  implements Player{
         }
         //If state is Hunting
         else {
+            System.out.println("First Hit: R-" + hits.get(0).row + " C-" + hits.get(0).column);
             if (answer.isHit) {
                 this.hits.add(guess);
 
@@ -169,28 +172,33 @@ public class GreedyGuessPlayer  implements Player{
 
         switch (this.currentHDir) {
             case NORTH:
-                if (firstGuess.row - offset < 0){
-                    return null;
-                }
-                nextGuess.row = firstGuess.row - offset;
-                break;
-            case SOUTH:
                 if (firstGuess.row + offset > 10){
                     return null;
                 }
                 nextGuess.row = firstGuess.row + offset;
+                nextGuess.column = firstGuess.column;
                 break;
-            case EAST:
+            case SOUTH:
+                if (firstGuess.row - offset < 0){
+                    return null;
+                }
+                nextGuess.row = firstGuess.row - offset;
+                nextGuess.column = firstGuess.column;
+                break;
+            case WEST:
                 if (firstGuess.column + offset > 10){
                     return null;
                 }
                 nextGuess.column = firstGuess.column + offset;
+                nextGuess.row = firstGuess.row;
+
                 break;
-            case WEST:
+            case EAST:
                 if (firstGuess.column - offset < 0){
                     return null;
                 }
                 nextGuess.column = firstGuess.column - offset;
+                nextGuess.row = firstGuess.row;
                 break;
         }
         return nextGuess;
