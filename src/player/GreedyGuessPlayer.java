@@ -40,18 +40,17 @@ public class GreedyGuessPlayer  implements Player{
         Guess guess;
         //Base Guess on player state (Targeting Or Hunting)
         if (this.state == PlayerState.TARGETING) {
-
             guess = targetingGuess();
-            System.out.println(guess.toString());
-
         }
         else {
             guess = huntingGuess();
         }
 
-        world.updateShot(guess);
+        // If it is not a valid guess return null.
+        if (!world.updateShot(guess)) {
+            return null;
+        }
 
-        // dummy return
         return guess;
     } // end of makeGuess()
 
@@ -60,6 +59,11 @@ public class GreedyGuessPlayer  implements Player{
     public void update(Guess guess, Answer answer) {
         // To be implemented.
         System.out.println("Greedy Update");
+
+        if (answer.isHit) {
+            this.state = PlayerState.HUNTING;
+        }
+
     } // end of update()
 
 
@@ -72,23 +76,10 @@ public class GreedyGuessPlayer  implements Player{
     } // end of noRemainingShips()
 
     //Process for creating a guess when in targeting mode.
+    //Generates a random guess that is able to ignore every second square.
     private Guess targetingGuess() {
-        System.out.println("Targeting Guess");
 
         //Generate a random guess to check.
-        Guess guess = generateRandomGuess();
-
-        return guess;
-    }
-
-    //Process for creating a guess when in hunting mode.
-    private Guess huntingGuess() {
-        System.out.println("Hunting Guess");
-        return null;
-    }
-
-    //Generates a random guess that is able to ignore every second square.
-    private Guess generateRandomGuess() {
         Random random = new Random();
         int row = random.nextInt(9);
         int column;
@@ -109,7 +100,13 @@ public class GreedyGuessPlayer  implements Player{
         Guess guess = new Guess();
         guess.column = column;
         guess.row = row;
-
         return guess;
     }
+
+    //Process for creating a guess when in hunting mode.
+    private Guess huntingGuess() {
+        System.out.println("Hunting Guess");
+        return null;
+    }
+
 } // end of class GreedyGuessPlayer
