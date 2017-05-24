@@ -14,11 +14,13 @@ public class RandomGuessPlayer implements Player{
     @Override
     public void initialisePlayer(World world) {
         // To be implemented.
+        System.out.println("IN the player INIT");
     } // end of initialisePlayer()
 
     @Override
     public Answer getAnswer(Guess guess) {
         // To be implemented.
+        System.out.println("IN the player INIT");
 
         // dummy return
         return null;
@@ -28,6 +30,7 @@ public class RandomGuessPlayer implements Player{
     @Override
     public Guess makeGuess() {
         // To be implemented.
+        System.out.println("IN the player INIT");
 
         // dummy return
         return null;
@@ -37,12 +40,15 @@ public class RandomGuessPlayer implements Player{
     @Override
     public void update(Guess guess, Answer answer) {
         // To be implemented.
+        System.out.println("IN the player INIT");
+
     } // end of update()
 
 
     @Override
     public boolean noRemainingShips() {
         // To be implemented.
+        System.out.println("IN the player INIT");
 
         // dummy return
         return true;
