@@ -259,7 +259,7 @@ public class BattleshipMain {
                 e.printStackTrace();
             }
             try {
-                clip.open(AudioSystem.getAudioInputStream(new File("/Users/rhysellwood/Battleship/Battleship/src/Song.wav")));
+                clip.open(AudioSystem.getAudioInputStream(new File("Song.wav")));
             } catch (LineUnavailableException e) {
                 e.printStackTrace();
             } catch (IOException e) {

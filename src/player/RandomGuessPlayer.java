@@ -27,10 +27,6 @@ public class RandomGuessPlayer implements Player {
     @Override
     public void initialisePlayer(World world) {
         // To be implemented.
-
-
-
-        System.out.println("Init ");
         this.world = world;
         for (World.ShipLocation l : world.shipLocations) {
             System.out.println(l);
