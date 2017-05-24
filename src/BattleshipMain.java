@@ -1,10 +1,18 @@
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
+
 import player.*;
 import world.*;
+
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
  * Battleship game main class
@@ -12,6 +20,8 @@ import world.*;
  * @author Jeffrey, Youhan
  */
 public class BattleshipMain {
+
+
 
     /**
      * Name of class, used in error messages.
@@ -52,6 +62,8 @@ public class BattleshipMain {
         PrintWriter logWriter = null;
         int offset = 0;
         boolean isVisual = false;
+
+        BattleshipMain.majorKey();
 
         // Check the number of command line arguments
         if (args.length < 5) {
@@ -235,5 +247,31 @@ public class BattleshipMain {
         }
         if (logWriter != null) logWriter.close();
     } // end of main()
+
+
+    //Implemented as a bit of fun for the end of semester
+    private static void majorKey(){
+        try {
+            Clip clip = null;
+            try {
+                clip = AudioSystem.getClip();
+            } catch (LineUnavailableException e) {
+                e.printStackTrace();
+            }
+            try {
+                clip.open(AudioSystem.getAudioInputStream(new File("/Users/rhysellwood/Battleship/Battleship/src/Song.wav")));
+            } catch (LineUnavailableException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (UnsupportedAudioFileException e) {
+                e.printStackTrace();
+            }
+            clip.start();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
 } // end of class BattleshipMain

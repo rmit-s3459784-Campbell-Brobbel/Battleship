@@ -1,5 +1,7 @@
 package player;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Random;
 import java.util.Scanner;
@@ -7,19 +9,17 @@ import java.util.Scanner;
 import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
 import world.*;
 
+import javax.sound.sampled.*;
+
 /**
  * Random guess player (task A).
  * Please implement this class.
  *
  * @author Youhan, Jeffrey
  */
-public class RandomGuessPlayer implements Player{
 
 
-
-
-
-
+public class RandomGuessPlayer implements Player {
 
 
     World world;
@@ -27,6 +27,10 @@ public class RandomGuessPlayer implements Player{
     @Override
     public void initialisePlayer(World world) {
         // To be implemented.
+
+
+
+        System.out.println("Init ");
         this.world = world;
         for (World.ShipLocation l : world.shipLocations) {
             System.out.println(l);
@@ -68,7 +72,6 @@ public class RandomGuessPlayer implements Player{
     @Override
     public Guess makeGuess() {
         // To be implemented.
-
         Guess guess = new Guess();
         int row;
         int column;
@@ -88,7 +91,6 @@ public class RandomGuessPlayer implements Player{
     @Override
     public void update(Guess guess, Answer answer) {
        //Method is redundant in RandomGuessPlayer
-
     } // end of update()
 
 

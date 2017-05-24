@@ -2,6 +2,7 @@ package world;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
@@ -237,15 +238,15 @@ public class World {
      * @param guess the shot to draw.
      */
     public void drawShot(Guess guess) {
-        if(!isVisual) return;
-        int offset = player - 1;
+
+      int offset = player - 1;
 
         int d = offset * (numColumn + 1);
             StdDraw.setPenColor(StdDraw.RED);
             StdDraw.setPenRadius(0.01);
         if (isHex) {
             int r = guess.row;
-            double c = guess.column - (r + 1) / 2 + r % 2 * 0.5;;
+            double c = guess.column - (r + 1) / 2 + r % 2 * 0.5;
             StdDraw.line(d+c+0.8, r+0.2, d+c+0.2, r+0.8);
             StdDraw.line(d+c+0.8, r+0.8, d+c+0.2, r+0.2);
         } else {
@@ -254,7 +255,6 @@ public class World {
             StdDraw.line(d+c+0.8, r+0.2, d+c+0.2, r+0.8);
             StdDraw.line(d+c+0.8, r+0.8, d+c+0.2, r+0.2);
         }
-
         // Make it slower
         try {
             TimeUnit.MILLISECONDS.sleep(100);
