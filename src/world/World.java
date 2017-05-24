@@ -257,7 +257,7 @@ public class World {
 
         // Make it slower
         try {
-            TimeUnit.MILLISECONDS.sleep(300);
+            TimeUnit.MILLISECONDS.sleep(100);
         } catch (InterruptedException ex) {
             // do nothing
         }

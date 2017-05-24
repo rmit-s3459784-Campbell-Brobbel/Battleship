@@ -1,7 +1,10 @@
 package player;
 
+import java.util.Random;
 import java.util.Scanner;
-import world.World;
+
+import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
+import world.*;
 
 /**
  * Random guess player (task A).
@@ -17,7 +20,6 @@ public class RandomGuessPlayer implements Player{
     public void initialisePlayer(World world) {
         // To be implemented.
         this.world = world;
-        System.out.println("Init Player");
         for (World.ShipLocation l : world.shipLocations) {
             System.out.println(l);
         }
@@ -26,26 +28,58 @@ public class RandomGuessPlayer implements Player{
     @Override
     public Answer getAnswer(Guess guess) {
         // To be implemented.
-        System.out.println("Get Answer");
+
+        Answer answer = new Answer();
+
+        for (World.ShipLocation l : this.world.shipLocations) {
+            for (World.Coordinate c : l.coordinates) {
+                if (c.row == guess.row && c.column == guess.column) {
+                    answer.isHit = true;
+                    l.coordinates.remove(c);
+                    if (l.coordinates.size() == 0) {
+                        answer.shipSunk = l.ship;
+                    }
+                    break;
+                }
+            }
+            if (answer.isHit) {
+                if (answer.shipSunk != null) {
+                    this.world.shipLocations.remove(l);
+                    System.out.println("Ship Sunk");
+                }
+                break;
+            }
+
+        }
 
         // dummy return
-        return null;
+        return answer;
     } // end of getAnswer()
 
 
     @Override
     public Guess makeGuess() {
         // To be implemented.
-        System.out.println("Make Guess");
+
+        Guess guess = new Guess();
+        int row;
+        int column;
+
+        Random random = new Random();
+
+        guess.row = random.nextInt(10);
+        guess.column = random.nextInt(10);
+
+        world.updateShot(guess);
+
         // dummy return
-        return null;
+        return guess;
     } // end of makeGuess()
 
 
     @Override
     public void update(Guess guess, Answer answer) {
-        // To be implemented.
-        System.out.println("update");
+       //Method is redundant in RandomGuessPlayer
 
     } // end of update()
 
@@ -53,10 +87,11 @@ public class RandomGuessPlayer implements Player{
     @Override
     public boolean noRemainingShips() {
         // To be implemented.
-        System.out.println("Remaining Ships");
-
+        if (world.shipLocations.size()==0){
+            return true;
+        }
         // dummy return
-        return true;
+        return false;
     } // end of noRemainingShips()
 
 } // end of class RandomGuessPlayer
