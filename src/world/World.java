@@ -139,6 +139,7 @@ public class World {
      */
     public boolean updateShot(Guess guess) {
         if (guess == null) {
+            System.out.println("Guess is null");
             return false;
         }
 
