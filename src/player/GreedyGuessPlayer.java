@@ -27,10 +27,31 @@ public class GreedyGuessPlayer  implements Player{
 
     @Override
     public Answer getAnswer(Guess guess) {
-        // To be implemented.
-        System.out.println("Greedy Get Answer");
-        // dummy return
-        return null;
+
+        Answer answer = new Answer();
+
+        for (World.ShipLocation l : this.world.shipLocations) {
+            for (World.Coordinate c : l.coordinates) {
+                if (c.row == guess.row && c.column == guess.column) {
+                    answer.isHit = true;
+                    l.coordinates.remove(c);
+                    if (l.coordinates.size() == 0) {
+                        answer.shipSunk = l.ship;
+                    }
+                    break;
+                }
+            }
+            if (answer.isHit) {
+                if (answer.shipSunk != null) {
+                    this.world.shipLocations.remove(l);
+                    System.out.println("Ship Sunk");
+                }
+                break;
+            }
+
+        }
+
+        return answer;
     } // end of getAnswer()
 
 
