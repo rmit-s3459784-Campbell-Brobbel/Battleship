@@ -11,9 +11,10 @@ import world.World;
  */
 public class GreedyGuessPlayer  implements Player{
 
+    World world;
     @Override
     public void initialisePlayer(World world) {
-        // To be implemented.
+       this.world = world;
     } // end of initialisePlayer()
 
     @Override
