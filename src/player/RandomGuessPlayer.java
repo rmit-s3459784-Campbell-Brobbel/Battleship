@@ -1,5 +1,6 @@
 package player;
 
+import java.io.InputStream;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -13,6 +14,13 @@ import world.*;
  * @author Youhan, Jeffrey
  */
 public class RandomGuessPlayer implements Player{
+
+
+
+
+
+
+
 
     World world;
 
