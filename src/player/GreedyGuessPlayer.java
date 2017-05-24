@@ -1,5 +1,6 @@
 package player;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 import world.World;
@@ -15,14 +16,23 @@ public class GreedyGuessPlayer  implements Player{
     private enum PlayerState {
         TARGETING, HUNTING
     }
+    private enum HuntingDirection {
+        NORTH, SOUTH, EAST, WEST
+    }
 
     PlayerState state = PlayerState.TARGETING;
     World world;
+
+    ArrayList<HuntingDirection> remainingHDirections = new ArrayList<HuntingDirection>();
+    HuntingDirection currentHDir;
+    ArrayList<Guess> hits = new ArrayList<Guess>();
+
     @Override
     public void initialisePlayer(World world) {
         this.world = world;
+        resetRemainingHuntingDirections();
 
-        System.out.println("Greedy Init");
+
     } // end of initialisePlayer()
 
     @Override
@@ -65,6 +75,12 @@ public class GreedyGuessPlayer  implements Player{
         }
         else {
             guess = huntingGuess();
+
+            while (guess == null) {
+             //Move to next direction
+                changeHuntingDirection();
+                guess = huntingGuess();
+            }
         }
 
         // If it is not a valid guess return null.
@@ -81,19 +97,38 @@ public class GreedyGuessPlayer  implements Player{
         // To be implemented.
         System.out.println("Greedy Update");
 
-        if (answer.isHit) {
-            this.state = PlayerState.HUNTING;
+        if (this.state == PlayerState.TARGETING) {
+            if (answer.isHit) {
+                this.state = PlayerState.HUNTING;
+                this.hits.add(guess);
+            }
         }
+        //If state is Hunting
+        else {
+            if (answer.isHit) {
+                this.hits.add(guess);
 
+                if (answer.shipSunk != null) {
+                    //Ship is sunk. Clear out the hits and reset remaining directions.
+                    this.hits.clear();
+                    this.resetRemainingHuntingDirections();
+                    this.state = PlayerState.TARGETING;
+                }
+            }
+            else {
+                changeHuntingDirection();
+            }
+        }
     } // end of update()
 
 
     @Override
     public boolean noRemainingShips() {
         // To be implemented.
-
-        // dummy return
-        return true;
+        if (world.shipLocations.size()==0){
+            return true;
+        }
+        return false;
     } // end of noRemainingShips()
 
     //Process for creating a guess when in targeting mode.
@@ -102,19 +137,20 @@ public class GreedyGuessPlayer  implements Player{
 
         //Generate a random guess to check.
         Random random = new Random();
-        int row = random.nextInt(9);
+        int row = random.nextInt(10);
+        System.out.println(row);
         int column;
 
         // If the random row is even
         if (row % 2 == 0) {
             do {
-                column = random.nextInt(9);
+                column = random.nextInt(10);
             }while (column % 2 != 0);
         }
         //If the random row is odd
         else {
             do {
-                column = random.nextInt(9);
+                column = random.nextInt(10);
             }while (column % 2 == 0);
         }
 
@@ -126,8 +162,57 @@ public class GreedyGuessPlayer  implements Player{
 
     //Process for creating a guess when in hunting mode.
     private Guess huntingGuess() {
-        System.out.println("Hunting Guess");
-        return null;
+
+        int offset = hits.size();
+        Guess firstGuess = hits.get(0);
+        Guess nextGuess = new Guess();
+
+        switch (this.currentHDir) {
+            case NORTH:
+                if (firstGuess.row - offset < 0){
+                    return null;
+                }
+                nextGuess.row = firstGuess.row - offset;
+                break;
+            case SOUTH:
+                if (firstGuess.row + offset > 10){
+                    return null;
+                }
+                nextGuess.row = firstGuess.row + offset;
+                break;
+            case EAST:
+                if (firstGuess.column + offset > 10){
+                    return null;
+                }
+                nextGuess.column = firstGuess.column + offset;
+                break;
+            case WEST:
+                if (firstGuess.column - offset < 0){
+                    return null;
+                }
+                nextGuess.column = firstGuess.column - offset;
+                break;
+        }
+        return nextGuess;
+    }
+
+    private void resetRemainingHuntingDirections() {
+        this.remainingHDirections.clear();
+        this.remainingHDirections.add(HuntingDirection.NORTH);
+        this.remainingHDirections.add(HuntingDirection.SOUTH);
+        this.remainingHDirections.add(HuntingDirection.EAST);
+        this.remainingHDirections.add(HuntingDirection.WEST);
+        this.currentHDir = this.remainingHDirections.get(0);
+
+    }
+
+    private void changeHuntingDirection() {
+            this.remainingHDirections.remove(0);
+            this.currentHDir = this.remainingHDirections.get(0);
+            ArrayList<Guess> tempList = new ArrayList<Guess>();
+            tempList.add(hits.get(0));
+            hits.clear();
+            hits.add(tempList.get(0));
     }
 
 } // end of class GreedyGuessPlayer
