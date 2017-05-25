@@ -63,7 +63,7 @@ public class BattleshipMain {
         int offset = 0;
         boolean isVisual = false;
 
-        BattleshipMain.majorKey();
+//        BattleshipMain.majorKey();
 
         // Check the number of command line arguments
         if (args.length < 5) {

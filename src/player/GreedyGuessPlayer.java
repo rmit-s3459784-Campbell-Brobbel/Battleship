@@ -13,10 +13,10 @@ import world.World;
  */
 public class GreedyGuessPlayer  implements Player{
 
-    private enum PlayerState {
+    public enum PlayerState {
         TARGETING, HUNTING
     }
-    private enum HuntingDirection {
+    public enum HuntingDirection {
         NORTH, SOUTH, EAST, WEST
     }
 
@@ -46,6 +46,7 @@ public class GreedyGuessPlayer  implements Player{
                     answer.isHit = true;
                     l.coordinates.remove(c);
                     if (l.coordinates.size() == 0) {
+                        System.out.println("Sunk This: " + l.ship.name());
                         answer.shipSunk = l.ship;
                     }
                     break;
@@ -54,7 +55,6 @@ public class GreedyGuessPlayer  implements Player{
             if (answer.isHit) {
                 if (answer.shipSunk != null) {
                     this.world.shipLocations.remove(l);
-                    System.out.println("Ship Sunk");
                 }
                 break;
             }
@@ -96,10 +96,7 @@ public class GreedyGuessPlayer  implements Player{
     @Override
     public void update(Guess guess, Answer answer) {
         // To be implemented.
-        System.out.println("Player State: " + this.state);
-        System.out.println("Current Dir" + currentHDir);
-        System.out.println("Guess: R-" + guess.row + " C-" + guess.column);
-        if (this.state == PlayerState.TARGETING) {
+                if (this.state == PlayerState.TARGETING) {
             if (answer.isHit) {
                 this.state = PlayerState.HUNTING;
                 this.hits.add(guess);
@@ -107,7 +104,6 @@ public class GreedyGuessPlayer  implements Player{
         }
         //If state is Hunting
         else {
-            System.out.println("First Hit: R-" + hits.get(0).row + " C-" + hits.get(0).column);
             if (answer.isHit) {
                 this.hits.add(guess);
 
@@ -141,7 +137,6 @@ public class GreedyGuessPlayer  implements Player{
         //Generate a random guess to check.
         Random random = new Random();
         int row = random.nextInt(10);
-        System.out.println(row);
         int column;
 
         // If the random row is even
