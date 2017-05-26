@@ -1,8 +1,7 @@
 package player;
 
 import java.util.ArrayList;
-import java.util.Random;
-import java.util.Scanner;
+
 import world.WeightingManager;
 import world.World;
 
@@ -15,7 +14,7 @@ import world.World;
  */
 public class MonteCarloGuessPlayer  implements Player{
 
-    GreedyGuessPlayer.PlayerState state = GreedyGuessPlayer.PlayerState.TARGETING;
+    GreedyGuessPlayer.PlayerState state = GreedyGuessPlayer.PlayerState.HUNTING;
     World world;
 
     ArrayList<GreedyGuessPlayer.HuntingDirection> remainingHDirections = new ArrayList<GreedyGuessPlayer.HuntingDirection>();
@@ -36,7 +35,7 @@ public class MonteCarloGuessPlayer  implements Player{
             System.out.println(s);
         }
         this.world = world;
-        resetRemainingHuntingDirections();
+        resetRemainingTargetingDirections();
         this.manager = new WeightingManager(remainingEnemyShips.get(0), 10);
 
     } // end of initialisePlayer()
@@ -95,16 +94,16 @@ public class MonteCarloGuessPlayer  implements Player{
 
         Guess guess;
         //Base Guess on player state (Targeting Or Hunting)
-        if (this.state == GreedyGuessPlayer.PlayerState.TARGETING) {
-            guess = targetingGuess();
+        if (this.state == GreedyGuessPlayer.PlayerState.HUNTING) {
+            guess = huntingModeGuess();
         }
         else {
-            guess = huntingGuess();
+            guess = targetingModeGuess();
 
             while (guess == null) {
                 //Move to next direction
-                changeHuntingDirection();
-                guess = huntingGuess();
+                changeTargetingDirection();
+                guess = targetingModeGuess();
             }
         }
 
@@ -114,11 +113,10 @@ public class MonteCarloGuessPlayer  implements Player{
 
     @Override
     public void update(Guess guess, Answer answer) {
-        // To be implemented.
 
-        if (this.state == GreedyGuessPlayer.PlayerState.TARGETING) {
+        if (this.state == GreedyGuessPlayer.PlayerState.HUNTING) {
             if (answer.isHit) {
-                this.state = GreedyGuessPlayer.PlayerState.HUNTING;
+                this.state = GreedyGuessPlayer.PlayerState.TARGETING;
                 this.hits.add(guess);
 
                 if (answer.shipSunk != null) {
@@ -126,7 +124,7 @@ public class MonteCarloGuessPlayer  implements Player{
                 }
             }
         }
-        //If state is Hunting
+        //If state is Targeting
         else {
             if (answer.isHit) {
                 this.hits.add(guess);
@@ -134,14 +132,14 @@ public class MonteCarloGuessPlayer  implements Player{
                 if (answer.shipSunk != null) {
                     //Ship is sunk. Clear out the hits and reset remaining directions.
                     this.hits.clear();
-                    this.resetRemainingHuntingDirections();
-                    this.state = GreedyGuessPlayer.PlayerState.TARGETING;
+                    this.resetRemainingTargetingDirections();
+                    this.state = GreedyGuessPlayer.PlayerState.HUNTING;
                     removeEnemyShipFromList(answer.shipSunk.name());
 
                 }
             }
             else {
-                changeHuntingDirection();
+                changeTargetingDirection();
             }
         }
     } // end of update()
@@ -149,16 +147,16 @@ public class MonteCarloGuessPlayer  implements Player{
 
     @Override
     public boolean noRemainingShips() {
-        // To be implemented.
+
         if (world.shipLocations.size()==0){
             return true;
         }
         return false;
     } // end of noRemainingShips()
 
-    //Process for creating a guess when in targeting mode.
+    //Process for creating a guess when in hunting mode.
     //Generates a random guess that is able to ignore every second square.
-    private Guess targetingGuess() {
+    private Guess huntingModeGuess() {
 
         Guess guess = this.manager.highestWeightedGuess();
         this.manager.removeGuess(guess);
@@ -167,8 +165,8 @@ public class MonteCarloGuessPlayer  implements Player{
         return guess;
     }
 
-    //Process for creating a guess when in hunting mode.
-    private Guess huntingGuess() {
+    //Process for creating a guess when in targeting mode.
+    private Guess targetingModeGuess() {
 
         int offset = hits.size();
         Guess firstGuess = hits.get(0);
@@ -208,7 +206,8 @@ public class MonteCarloGuessPlayer  implements Player{
         return nextGuess;
     }
 
-    private void resetRemainingHuntingDirections() {
+    //Resets remaining directions left to check.
+    private void resetRemainingTargetingDirections() {
         this.remainingHDirections.clear();
         this.remainingHDirections.add(GreedyGuessPlayer.HuntingDirection.NORTH);
         this.remainingHDirections.add(GreedyGuessPlayer.HuntingDirection.SOUTH);
@@ -218,7 +217,10 @@ public class MonteCarloGuessPlayer  implements Player{
 
     }
 
-    private void changeHuntingDirection() {
+    // When in targeting mode we pick a direction to search in.
+    // If that direction hits a ship we keep moving in that direction.
+    // Otherwise we go back to the cell that was hit first and go in a different direction.
+    private void changeTargetingDirection() {
         this.remainingHDirections.remove(0);
         this.currentHDir = this.remainingHDirections.get(0);
         ArrayList<Guess> tempList = new ArrayList<Guess>();
